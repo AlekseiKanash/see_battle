@@ -26,12 +26,6 @@ BattleScene::BattleScene(QWidget * parent)
     setMouseTracking(true);
 }
 
-BattleScene *BattleScene::create(QWidget * parent)
-{
-    BattleScene * scene = new BattleScene(parent);
-    return scene;
-}
-
 QPoint BattleScene::getCellPos(QPointF pos)
 {
     QPoint ret(pos.x() / SceneParams::cellSize,
@@ -40,14 +34,14 @@ QPoint BattleScene::getCellPos(QPointF pos)
     return ret;
 }
 
-void BattleScene::addEnemySheep(QPoint pos, qint32 len, Qt::Orientation orientation)
+void BattleScene::addSheep(QPoint pos, qint32 len, Qt::Orientation orientation)
 {
-    Sheep * sheepToAdd = new Sheep(false, len, orientation);
+    Sheep * sheepToAdd = new Sheep(isMine, len, orientation);
     sheepToAdd->setPos(pos);
     battleScene->addItem(sheepToAdd);
 
-    sheepToAdd->setPos(pos);//battleScene->getNewSheepPos());
-    sheepToAdd->setVisible(true);
+    sheepToAdd->setPos(pos);
+    sheepToAdd->setVisible(isMine);
 }
 
 void BattleScene::shotToScene(QPointF pos)
@@ -103,7 +97,7 @@ void BattleScene::wheelEvent(QWheelEvent * event)
         battleScene->decGhostLen();
 }
 
-void BattleScene::shot(QPoint pos)
+bool BattleScene::shot(QPoint pos)
 {
     qDebug() << "shot to " << pos.x() << " : " << pos.y();
 
@@ -122,11 +116,12 @@ void BattleScene::shot(QPoint pos)
             // если палуба под мышью - стреляем в нее
             if (itemPos == pos)
             {
-                part->shot();
+                return part->shot();
                 break;
             }
         }
     }
+    return false;
 }
 
 QList<QPoint> getCellsTakenBySheep(Sheep * sheep)

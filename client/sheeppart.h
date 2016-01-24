@@ -11,7 +11,7 @@ public:
     SheepPart(QPoint pos, Sheep * parent);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
     virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
-    void shot();
+    bool shot();
     void setPos(QPoint pos);
     QPoint getScenePos();
 

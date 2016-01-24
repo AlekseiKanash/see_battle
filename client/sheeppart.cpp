@@ -49,7 +49,7 @@ void SheepPart::paint(QPainter * painter, const QStyleOptionGraphicsItem * optio
     painter->restore();
 }
 
-void SheepPart::shot()
+bool SheepPart::shot()
 {
     qDebug() << "Part Shot";
     if (isAlive)
@@ -59,7 +59,9 @@ void SheepPart::shot()
         // сообщим кораблю о попадании в палубу
         parentSheep->partHadShooted();
         update();
+        return true;
     }
+    return false;
 }
 
 void SheepPart::setPos(QPoint pos)

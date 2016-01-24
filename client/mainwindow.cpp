@@ -2,10 +2,11 @@
 #include "ui_mainwindow.h"
 
 #include "battlescene.h"
-
+#include "battlecontroller.h"
 
 #include <QHBoxLayout>
 #include <QPushButton>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,13 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QWidget * centralWidget = ui->centralWidget;
 
-    BattleScene * myScene = BattleScene::create(centralWidget);
+    BattleScene * myScene = new BattleScene(centralWidget);
     myScene->setIsMine(true);
 
-    BattleScene * opponentScene = BattleScene::create(centralWidget);
-    opponentScene->setIsMine(false);
-    opponentScene->addEnemySheep(QPoint(1,1), 3, Qt::Orientation::Vertical);
-    opponentScene->addEnemySheep(QPoint(5,5), 3, Qt::Orientation::Horizontal);
+    BattleScene * opponentScene = new BattleScene(centralWidget);
 
     QHBoxLayout * battleScenesLayout = new QHBoxLayout(centralWidget);
 
@@ -30,6 +28,12 @@ MainWindow::MainWindow(QWidget *parent) :
     battleScenesLayout->addWidget(myScene);
     battleScenesLayout->addSpacerItem(new QSpacerItem(1,1));
     battleScenesLayout->addWidget(opponentScene);
+
+
+    BattleController * battleController = new BattleController(this);
+    battleController->registerMyScene(myScene);
+    battleController->registerOpponentScene(opponentScene);
+    battleController->doTest();
 
 }
 

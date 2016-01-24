@@ -24,19 +24,16 @@ class BattleScene : public QWidget
 
 Q_OBJECT    
 
-private:
-    BattleScene(QWidget *parent = NULL);
-
 public:
-    static BattleScene * create(QWidget *parent);
+    BattleScene(QWidget *parent = nullptr);
+
     static QPoint getCellPos(QPointF pos);
     void setIsMine(bool mine) {isMine = mine;}
-    void shot(QPoint pos); // inCells
+    bool shot(QPoint pos); // inCells
     void shotToScene(QPointF pos);
     bool isSheepUnderPos(QPointF pos);
 
-public slots:
-    void addEnemySheep(QPoint pos, qint32 len, Qt::Orientation orientation);
+    void addSheep(QPoint pos, qint32 len, Qt::Orientation orientation);
 
 private:
     virtual void mousePressEvent(QMouseEvent * event);

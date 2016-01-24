@@ -19,13 +19,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     battlescene.cpp \
     sheep.cpp \
-    sheeppart.cpp
+    sheeppart.cpp \
+    battlecontroller.cpp
 
 HEADERS  += mainwindow.h \
     battlescene.h \
     sheep.h \
     sceneparameters.h \
     ghostsheep.h \
-    sheeppart.h
+    sheeppart.h \
+    battlecontroller.h
 
 FORMS    += mainwindow.ui
