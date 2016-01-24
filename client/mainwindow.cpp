@@ -16,9 +16,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget * centralWidget = ui->centralWidget;
 
     BattleScene * myScene = BattleScene::create(centralWidget);
+    myScene->setIsMine(true);
 
     BattleScene * opponentScene = BattleScene::create(centralWidget);
-
+    opponentScene->setIsMine(false);
+    opponentScene->addSheep(QPoint(1,1), 3, Qt::Orientation::Vertical);
 
     QHBoxLayout * battleScenesLayout = new QHBoxLayout(centralWidget);
 

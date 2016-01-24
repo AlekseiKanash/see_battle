@@ -18,11 +18,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     battlescene.cpp \
-    sheep.cpp
+    sheep.cpp \
+    sheeppart.cpp
 
 HEADERS  += mainwindow.h \
     battlescene.h \
     sheep.h \
-    sceneparameters.h
+    sceneparameters.h \
+    ghostsheep.h \
+    sheeppart.h
 
 FORMS    += mainwindow.ui
