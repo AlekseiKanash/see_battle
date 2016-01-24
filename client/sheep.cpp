@@ -9,7 +9,7 @@
 #include "sceneparameters.h"
 #include "sheeppart.h"
 
-Sheep::Sheep(qint32 _len, Qt::Orientation _orientation)
+Sheep::Sheep(bool isMine, qint32 _len, Qt::Orientation _orientation)
     : length(_len)
     , orientation(_orientation)
 {
@@ -35,11 +35,10 @@ Sheep::Sheep(qint32 _len, Qt::Orientation _orientation)
             pos = QPoint (i, 0);
         }
 
-        qDebug() << "adding part " << pos.x() << " : " << pos.y();
-
         SheepPart * part = new SheepPart(pos, this);
         part->setParentItem(this);
         part->setPos(pos);
+        part->setVisible(isMine);
     }
 }
 
@@ -58,10 +57,13 @@ void Sheep::setPos(QPoint pos)
 
 void Sheep::partHadShooted()
 {
+    // нет смысла возиться с пониманием что за палуба подбита
+    // достаточно знать все ли они уничтожены
     partsAlive--;
     if (0 == partsAlive)
     {
         isAlive = false;
+        setVisible(true);
         update();
     }
 }

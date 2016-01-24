@@ -31,13 +31,16 @@ public:
     static BattleScene * create(QWidget *parent);
     static QPoint getCellPos(QPointF pos);
     void setIsMine(bool mine) {isMine = mine;}
-    void shot(QPointF pos);
+    void shot(QPoint pos); // inCells
+    void shotToScene(QPointF pos);
+    bool isSheepUnderPos(QPointF pos);
 
 public slots:
-    void addSheep(QPoint pos, qint32 len, Qt::Orientation orientation);
+    void addEnemySheep(QPoint pos, qint32 len, Qt::Orientation orientation);
 
 private:
     virtual void mousePressEvent(QMouseEvent * event);
+    virtual void wheelEvent(QWheelEvent * event);
 
     void drawGrid();
 
@@ -87,6 +90,18 @@ private:
             }
         }
 
+        void incGhostLen()
+        {
+            ghostSheep.incLen();
+            update();
+        }
+
+        void decGhostLen()
+        {
+            ghostSheep.decLen();
+            update();
+        }
+
         void moveGhostSheep(QPointF pos)
         {
             if (ghostSheep.isVisible)
@@ -99,6 +114,11 @@ private:
                     update();
                 }
             }
+        }
+
+        void rotateGhostSheep()
+        {
+            ghostSheep.rotate();
         }
 
         void setGhostSheepVisible(bool hasGhost)
@@ -116,6 +136,22 @@ private:
             addItem(ghostSheep.createSheep());
         }
 
+        void removeSheep()
+        {
+            float x = ghostSheep.pos.x()*SceneParams::cellSize;
+            float y = ghostSheep.pos.y()*SceneParams::cellSize;
+
+            QList<QGraphicsItem *> sceneItems = items(QPointF(x,y));
+            for (QGraphicsItem * item : sceneItems)
+            {
+                Sheep * sheep = dynamic_cast<Sheep *>(item);
+                if (sheep)
+                {
+                    removeItem(sheep);
+                }
+            }
+        }
+
     private:
         GhostSheep ghostSheep;
         QPoint prevGhostSheepPos;
@@ -127,7 +163,6 @@ private:
     Scene * battleScene;
     View * battleView;
 
-    QList<Sheep *> sheeps;
     QList<QPoint> cellsToAddSheep;
 };
 

@@ -11,7 +11,7 @@ class GhostSheep
 public:
     Sheep * createSheep()
     {
-        Sheep * sheep = new Sheep(len, orientation);
+        Sheep * sheep = new Sheep(true, len, orientation);
         sheep->setPos(pos);
         return sheep;
     }
@@ -32,9 +32,29 @@ public:
         painter->restore();
     }
 
-    qint32 len = 3;
-    QPoint pos = QPoint(0,0);
-    Qt::Orientation orientation = Qt::Orientation::Horizontal;
+    void incLen()
+    {
+        if (len < SceneParams::maxLen)
+            len++;
+    }
+
+    void decLen()
+    {
+        if (len > SceneParams::minLen)
+            len--;
+    }
+
+    void rotate()
+    {
+        if (Qt::Orientation::Vertical == orientation)
+            orientation = Qt::Orientation::Horizontal;
+        else
+            orientation = Qt::Orientation::Vertical;
+    }
+
+    qint32 len = 1;
+    QPoint pos = QPoint(-2,-2); // hide
+    Qt::Orientation orientation = Qt::Orientation::Vertical;
     bool isVisible = true;
 };
 

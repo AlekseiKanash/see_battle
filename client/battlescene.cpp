@@ -40,51 +40,90 @@ QPoint BattleScene::getCellPos(QPointF pos)
     return ret;
 }
 
-void BattleScene::addSheep(QPoint pos, qint32 len, Qt::Orientation orientation)
+void BattleScene::addEnemySheep(QPoint pos, qint32 len, Qt::Orientation orientation)
 {
-    Sheep * sheepToAdd = new Sheep(len, orientation);
+    Sheep * sheepToAdd = new Sheep(false, len, orientation);
     sheepToAdd->setPos(pos);
-    sheeps << sheepToAdd;
     battleScene->addItem(sheepToAdd);
 
-    sheepToAdd->setPos(battleScene->getNewSheepPos());
+    sheepToAdd->setPos(pos);//battleScene->getNewSheepPos());
     sheepToAdd->setVisible(true);
+}
+
+void BattleScene::shotToScene(QPointF pos)
+{
+    qDebug() << "shot from scene to pos " << pos.x() << " : " << pos.y();
+    QPoint shotPos = BattleScene::getCellPos(pos);
+    shot(shotPos);
+}
+
+bool BattleScene::isSheepUnderPos(QPointF pos)
+{
+    QGraphicsItem * item = battleScene->itemAt(pos, QTransform());
+
+    const qint32 maxPos = SceneParams::cellSize*SceneParams::sceneSize;
+    bool isInWidth = pos.x() < maxPos;
+    bool isInHeight = pos.y() < maxPos;
+
+    return nullptr != item || !isInWidth || !isInHeight;
 }
 
 void BattleScene::mousePressEvent(QMouseEvent * event)
 {
-    if (!isMine)
+    if (event->button() == Qt::MouseButton::LeftButton)
     {
-        //shot(event->pos());
-       // event->accept();
-        //return;
+        if (!isMine)
+        {
+            shotToScene(event->pos());
+            return;
+        }
+
+        if (isSheepUnderPos(event->pos()))
+            battleScene->removeSheep();
+        else
+            battleScene->addSheep();
     }
-
-    QGraphicsItem * item = battleScene->itemAt(event->pos(), QTransform());
-
-    const qint32 maxPos = SceneParams::cellSize*SceneParams::sceneSize;
-    bool isInWidth = event->pos().x() < maxPos;
-    bool isInHeight = event->pos().y() < maxPos;
-    if (nullptr != item || !isInWidth || !isInHeight)
-        return;
-
-    if (isMine)
-        battleScene->addSheep();
+    else if (event->button() == Qt::MouseButton::RightButton)
+    {
+        if (isMine)
+            battleScene->rotateGhostSheep();
+    }
 
     QWidget::mousePressEvent(event);
 }
 
-void BattleScene::shot(QPointF pos)
+void BattleScene::wheelEvent(QWheelEvent * event)
 {
-    qDebug() << "shot from scene!";
+    if (!isMine)
+        return;
+
+    if (0 < event->delta())
+        battleScene->incGhostLen();
+    else
+        battleScene->decGhostLen();
+}
+
+void BattleScene::shot(QPoint pos)
+{
+    qDebug() << "shot to " << pos.x() << " : " << pos.y();
+
+    // проходим по всем элементам модели
     for (QGraphicsItem * item : battleScene->items())
     {
-        if (item)
+        // находим те, которые являются палубами
+        SheepPart * part = dynamic_cast<SheepPart *>(item);
+        if (part)
         {
-            SheepPart * part = dynamic_cast<SheepPart *>(item);
-            if (part)
+            qDebug() << "------";
+            qDebug() << "partFound";
+            // получаем координаты палубы на сцене
+            QPoint itemPos = part->getScenePos();
+            qDebug() << "at pos " << itemPos.x() << " : " << itemPos.y();
+            // если палуба под мышью - стреляем в нее
+            if (itemPos == pos)
             {
-               // part->shot();
+                part->shot();
+                break;
             }
         }
     }

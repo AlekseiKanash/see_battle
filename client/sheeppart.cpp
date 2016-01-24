@@ -7,6 +7,7 @@
 
 #include "sheep.h"
 #include "sceneparameters.h"
+#include "battlescene.h"
 
 SheepPart::SheepPart(QPoint pos, Sheep * parent)
     : position(pos)
@@ -54,6 +55,8 @@ void SheepPart::shot()
     if (isAlive)
     {
         isAlive = false;
+        setVisible(true);
+        // сообщим кораблю о попадании в палубу
         parentSheep->partHadShooted();
         update();
     }
@@ -67,4 +70,14 @@ void SheepPart::setPos(QPoint pos)
     qint32 y = position.y() * SceneParams::cellSize;
 
     QGraphicsItem::setPos(QPointF(x, y));
+}
+
+QPoint SheepPart::getScenePos()
+{
+    qDebug() << "getScenePos for part " << pos().x() << " : " << pos().y() ;
+    QPointF globalPos = parentItem()->pos() + pos();
+    qDebug() << "global pos " << globalPos.x() << " : " << globalPos.y() ;
+    QPoint globalCellPos = BattleScene::getCellPos(globalPos);
+    qDebug() << "global cell pos " << globalCellPos.x() << " : " << globalCellPos.y() ;
+    return globalCellPos;
 }

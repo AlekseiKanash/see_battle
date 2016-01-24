@@ -10,7 +10,7 @@ class SheepPart;
 class Sheep : public QGraphicsRectItem
 {
 public:
-    explicit Sheep(qint32 _len, Qt::Orientation _orientation);
+    explicit Sheep(bool isMine, qint32 _len, Qt::Orientation _orientation);
     void setPos(QPoint pos);
     QPoint getPos() const {return position;}
     void partHadShooted();

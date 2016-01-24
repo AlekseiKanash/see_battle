@@ -13,6 +13,7 @@ public:
     virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
     void shot();
     void setPos(QPoint pos);
+    QPoint getScenePos();
 
 private:
     bool isAlive = true;
